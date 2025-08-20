@@ -124,19 +124,14 @@ export default function SocialMediaGenerator() {
     setIsGenerating(true);
     setMessage('');
     
-    try {
-      const { data, error } = await supabase.functions.invoke('actual-agent')
-        .then((response) => response.response?.json())
-        .catch((err) => {
-          console.error('Error invoking function:', err);
-          throw new Error('Failed to invoke edge function');
-        });
-        console.log('====================================');
-        console.log('Edge Function Response:', data);
-        console.log('====================================');
-    } catch (error) {
-      fetchPosts();
-    }
+      const response = await supabase.functions.invoke('actual-agent')
+      
+      if(response){
+        fetchPosts();
+        setIsGenerating(false);
+        setMessage('✅ New post generated successfully!');
+      }
+    
   };
 
   // Load posts on component mount
